@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ateliê dos Balões — Painel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'login/css/login.css' %}">
+</head>
+<body class="home-body">
+    <div class="home-container">
+        <h1>Olá, {{ user.get_full_name|default:user.username }}!</h1>
+        <p>Você está autenticada no sistema do Ateliê dos Balões.</p>
+        <div class="home-actions">
+            <a href="{% url 'admin:index' %}" class="btn btn-primary">Ir para o Admin</a>
+            <a href="{% url 'logout' %}" class="btn btn-secondary">Sair</a>
+        </div>
+    </div>
+</body>
+</html>

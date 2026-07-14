@@ -1,0 +1,329 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Ateliê dos Balões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                <section class="page-header">
+                    <div class="page-header__text">
+                        <h1>Olá, {{ display_name }}! <span class="page-header__balloon" aria-hidden="true">🎈</span></h1>
+                        <p>Bem-vinda ao seu painel de gestão.</p>
+                    </div>
+                    <div class="page-header__actions">
+                        {# href: {% url 'pedidos:create' %} quando o app existir #}
+                        <a href="#" class="btn btn--blue">+ Novo Pedido</a>
+                        {# href: {% url 'orcamentos:create' %} quando o app existir #}
+                        <a href="#" class="btn btn--pink">+ Novo Orçamento</a>
+                    </div>
+                </section>
+
+                <section class="stats-grid" aria-label="Resumo do mês">
+                    <article class="stat-card stat-card--pink">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M4 7h16v12H4V7z" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M8 7V5a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.8"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <span class="stat-card__label">Vendas do mês</span>
+                            {% if monthly_sales %}
+                            <strong class="stat-card__value">{{ monthly_sales.value }}</strong>
+                            <span class="stat-card__meta">{{ monthly_sales.subtitle }}</span>
+                            {% else %}
+                            <span class="skeleton skeleton--value"></span>
+                            <span class="skeleton skeleton--meta"></span>
+                            {% endif %}
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-card--blue">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <path d="M6 6h15l-1.5 9H7.5L6 6z" stroke="currentColor" stroke-width="1.8"/>
+                                <circle cx="9" cy="19" r="1.5" fill="currentColor"/>
+                                <circle cx="17" cy="19" r="1.5" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <span class="stat-card__label">Pedidos do mês</span>
+                            {% if monthly_orders %}
+                            <strong class="stat-card__value">{{ monthly_orders.value }}</strong>
+                            <span class="stat-card__meta">{{ monthly_orders.subtitle }}</span>
+                            {% else %}
+                            <span class="skeleton skeleton--value"></span>
+                            <span class="skeleton skeleton--meta"></span>
+                            {% endif %}
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-card--green">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <span class="stat-card__label">Orçamentos do mês</span>
+                            {% if monthly_budgets %}
+                            <strong class="stat-card__value">{{ monthly_budgets.value }}</strong>
+                            <span class="stat-card__meta">{{ monthly_budgets.subtitle }}</span>
+                            {% else %}
+                            <span class="skeleton skeleton--value"></span>
+                            <span class="skeleton skeleton--meta"></span>
+                            {% endif %}
+                        </div>
+                    </article>
+
+                    <article class="stat-card stat-card--teal">
+                        <div class="stat-card__icon">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                <circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/>
+                                <circle cx="17" cy="10" r="2.5" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M3 20c0-3 2.7-5 6-5M14 20c0-2.5 2-4.5 4.5-4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </div>
+                        <div class="stat-card__content">
+                            <span class="stat-card__label">Clientes cadastrados</span>
+                            {% if total_clients %}
+                            <strong class="stat-card__value">{{ total_clients.value }}</strong>
+                            <span class="stat-card__meta">{{ total_clients.subtitle }}</span>
+                            {% else %}
+                            <span class="skeleton skeleton--value"></span>
+                            <span class="skeleton skeleton--meta"></span>
+                            {% endif %}
+                        </div>
+                    </article>
+                </section>
+
+                <section class="content-grid content-grid--2">
+                    <article class="card card--orders">
+                        <header class="card__header">
+                            <h2 class="card__title">Pedidos Recentes</h2>
+                            {# href: {% url 'pedidos:list' %} quando o app existir #}
+                            <a href="#" class="card__link">Ver todos</a>
+                        </header>
+
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Pedido</th>
+                                        <th>Cliente</th>
+                                        <th>Descrição</th>
+                                        <th>Status</th>
+                                        <th>Valor</th>
+                                        <th>Data</th>
+                                        <th class="data-table__actions-col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in recent_orders %}
+                                    <tr>
+                                        <td data-label="Pedido"><strong>{{ order.number }}</strong></td>
+                                        <td data-label="Cliente">{{ order.client }}</td>
+                                        <td data-label="Descrição">{{ order.description }}</td>
+                                        <td data-label="Status">
+                                            <span class="badge badge--{{ order.status_class }}">{{ order.status_label }}</span>
+                                        </td>
+                                        <td data-label="Valor">{{ order.value }}</td>
+                                        <td data-label="Data">{{ order.date }}</td>
+                                        <td data-label="Ações" class="data-table__actions-col">
+                                            <button type="button" class="dots-btn" aria-label="Opções do pedido {{ order.number }}">⋯</button>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="data-table__empty-row">
+                                        <td colspan="7">
+                                            <div class="empty-state">
+                                                <p>Nenhum pedido recente encontrado.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                    <article class="card card--chart">
+                        <header class="card__header">
+                            <h2 class="card__title">Vendas dos Últimos 6 Meses</h2>
+                            <select class="chart-filter" id="chart-period" aria-label="Período do gráfico">
+                                <option value="year" selected>Este ano</option>
+                                <option value="6months">Últimos 6 meses</option>
+                                <option value="last-year">Último ano</option>
+                            </select>
+                        </header>
+
+                        <div class="chart-container">
+                            {% if sales_chart_labels and sales_chart_values %}
+                            <canvas id="sales-chart" aria-label="Gráfico de vendas dos últimos 6 meses"></canvas>
+                            {% else %}
+                            <div class="chart-skeleton" id="chart-skeleton" aria-hidden="true">
+                                <svg viewBox="0 0 400 180" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="#ff2f78" stop-opacity="0.25"/>
+                                            <stop offset="100%" stop-color="#ff2f78" stop-opacity="0.02"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path d="M0,140 L50,120 L100,110 L150,95 L200,80 L250,65 L300,50 L350,35 L400,25 L400,180 L0,180 Z" fill="url(#chartGradient)"/>
+                                    <polyline points="0,140 50,120 100,110 150,95 200,80 250,65 300,50 350,35 400,25" fill="none" stroke="#ff2f78" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                            <p class="chart-empty-msg">Dados de vendas serão exibidos quando disponíveis.</p>
+                            {% endif %}
+                        </div>
+                    </article>
+                </section>
+
+                <section class="content-grid content-grid--3">
+                    <article class="card">
+                        <header class="card__header card__header--icon">
+                            <div class="card__icon card__icon--pink">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 3v18M8 8h8M8 13h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h2 class="card__title">Resumo Financeiro (Mês)</h2>
+                        </header>
+
+                        {% if financial_summary %}
+                        <ul class="finance-list">
+                            <li class="finance-item">
+                                <div class="finance-item__head">
+                                    <span>Faturamento</span>
+                                    <strong>{{ financial_summary.faturamento }}</strong>
+                                </div>
+                                <div class="finance-bar"><span style="width: {{ financial_summary.faturamento_pct }}%"></span></div>
+                            </li>
+                            <li class="finance-item">
+                                <div class="finance-item__head">
+                                    <span>Recebimentos</span>
+                                    <strong>{{ financial_summary.recebimentos }}</strong>
+                                </div>
+                                <div class="finance-bar finance-bar--blue"><span style="width: {{ financial_summary.recebimentos_pct }}%"></span></div>
+                            </li>
+                            <li class="finance-item">
+                                <div class="finance-item__head">
+                                    <span>Despesas</span>
+                                    <strong>{{ financial_summary.despesas }}</strong>
+                                </div>
+                                <div class="finance-bar finance-bar--gray"><span style="width: {{ financial_summary.despesas_pct }}%"></span></div>
+                            </li>
+                            <li class="finance-item">
+                                <div class="finance-item__head">
+                                    <span>Lucro líquido</span>
+                                    <strong class="text-positive">{{ financial_summary.lucro }}</strong>
+                                </div>
+                                <div class="finance-bar finance-bar--green"><span style="width: {{ financial_summary.lucro_pct }}%"></span></div>
+                            </li>
+                        </ul>
+                        {% else %}
+                        <ul class="finance-list finance-list--skeleton">
+                            <li class="finance-item"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--bar"></span></li>
+                            <li class="finance-item"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--bar"></span></li>
+                            <li class="finance-item"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--bar"></span></li>
+                            <li class="finance-item"><span class="skeleton skeleton--line"></span><span class="skeleton skeleton--bar"></span></li>
+                        </ul>
+                        {% endif %}
+                    </article>
+
+                    <article class="card">
+                        <header class="card__header card__header--icon">
+                            <div class="card__icon card__icon--pink">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M12 8v13M8 12h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                    <rect x="5" y="3" width="14" height="8" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                                </svg>
+                            </div>
+                            <h2 class="card__title">Produtos Mais Vendidos</h2>
+                        </header>
+
+                        <ul class="simple-list">
+                            {% for product in best_selling_products %}
+                            <li class="simple-list__item">
+                                <div class="simple-list__avatar">{{ product.name|slice:":1" }}</div>
+                                <div class="simple-list__info">
+                                    <strong>{{ product.name }}</strong>
+                                    <span>{{ product.quantity }} vendas</span>
+                                </div>
+                            </li>
+                            {% empty %}
+                            <li class="simple-list__empty">
+                                <div class="simple-list__item simple-list__item--skeleton"><span class="skeleton skeleton--avatar"></span><span class="skeleton skeleton--line"></span></div>
+                                <div class="simple-list__item simple-list__item--skeleton"><span class="skeleton skeleton--avatar"></span><span class="skeleton skeleton--line"></span></div>
+                                <div class="simple-list__item simple-list__item--skeleton"><span class="skeleton skeleton--avatar"></span><span class="skeleton skeleton--line"></span></div>
+                                <p class="simple-list__msg">Nenhum produto vendido no período.</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </article>
+
+                    <article class="card">
+                        <header class="card__header card__header--icon">
+                            <div class="card__icon card__icon--pink">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                                    <path d="M8 3v4M16 3v4M3 10h18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+                                </svg>
+                            </div>
+                            <h2 class="card__title">Agenda de Entregas</h2>
+                        </header>
+
+                        <ul class="delivery-list">
+                            {% for delivery in upcoming_deliveries %}
+                            <li class="delivery-list__item">
+                                <div class="delivery-list__info">
+                                    <strong>{{ delivery.client }}</strong>
+                                    <span>{{ delivery.date }} · {{ delivery.time }} · {{ delivery.type }}</span>
+                                </div>
+                                <span class="badge badge--{{ delivery.status_class }}">{{ delivery.status_label }}</span>
+                            </li>
+                            {% empty %}
+                            <li class="delivery-list__empty">
+                                <div class="delivery-list__item delivery-list__item--skeleton">
+                                    <span class="skeleton skeleton--line skeleton--short"></span>
+                                    <span class="skeleton skeleton--badge"></span>
+                                </div>
+                                <div class="delivery-list__item delivery-list__item--skeleton">
+                                    <span class="skeleton skeleton--line skeleton--short"></span>
+                                    <span class="skeleton skeleton--badge"></span>
+                                </div>
+                                <div class="delivery-list__item delivery-list__item--skeleton">
+                                    <span class="skeleton skeleton--line skeleton--short"></span>
+                                    <span class="skeleton skeleton--badge"></span>
+                                </div>
+                                <p class="delivery-list__msg">Nenhuma entrega agendada.</p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    {{ sales_chart_labels|json_script:"sales-chart-labels" }}
+    {{ sales_chart_values|json_script:"sales-chart-values" }}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+</body>
+</html>
