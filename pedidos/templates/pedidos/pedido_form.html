@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if pedido %}Editar Pedido{% else %}Novo Pedido{% endif %} — Ateliê dos Balões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+    <link rel="stylesheet" href="{% static 'pedidos/css/forms.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                <section class="page-header">
+                    <div class="page-header__text">
+                        <h1>{% if pedido %}Editar Pedido #{{ pedido.id }}{% else %}Novo Pedido{% endif %}</h1>
+                    </div>
+                </section>
+
+                <section class="content-grid content-grid--2">
+                    <article class="card form-card" style="grid-column: 1 / -1;">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p>{{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+
+                            {% for field in form %}
+                            <div class="form-field">
+                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                <div class="form-errors">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+
+                            <h2 class="card__title">Itens</h2>
+                            {{ formset.management_form }}
+                            {% if formset.non_form_errors %}
+                            <div class="form-errors">{{ formset.non_form_errors }}</div>
+                            {% endif %}
+
+                            <table class="items-table" id="items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Produto</th>
+                                        <th>Descrição</th>
+                                        <th>Quantidade</th>
+                                        <th>Preço unitário</th>
+                                        <th>Remover</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item_form in formset %}
+                                    <tr class="items-table__row">
+                                        {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
+                                        <td class="item-produto-cell">{{ item_form.produto }}</td>
+                                        <td>{{ item_form.descricao }}{{ item_form.descricao.errors }}</td>
+                                        <td>{{ item_form.quantidade }}{{ item_form.quantidade.errors }}</td>
+                                        <td>{{ item_form.preco_unitario }}{{ item_form.preco_unitario.errors }}</td>
+                                        <td>
+                                            {% if item_form.DELETE %}
+                                            <label>{{ item_form.DELETE }} excluir</label>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn" id="add-item-row">+ Adicionar item</button>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--blue">Salvar</button>
+                                <a href="{% url 'pedidos:list' %}" class="btn">Cancelar</a>
+                            </div>
+                        </form>
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+    <script>
+        document.getElementById('add-item-row').addEventListener('click', function () {
+            const table = document.getElementById('items-table').querySelector('tbody');
+            const totalForms = document.getElementById('id_itens-TOTAL_FORMS');
+            const formIndex = parseInt(totalForms.value, 10);
+            const lastRow = table.querySelector('tr:last-child');
+            const newRow = lastRow.cloneNode(true);
+
+            newRow.querySelectorAll('input, select').forEach(function (field) {
+                if (field.type === 'checkbox') {
+                    field.checked = false;
+                } else {
+                    field.value = '';
+                }
+                field.name = field.name.replace(/itens-(\d+)-/, 'itens-' + formIndex + '-');
+                field.id = field.id.replace(/itens-(\d+)-/, 'itens-' + formIndex + '-');
+            });
+
+            table.appendChild(newRow);
+            totalForms.value = formIndex + 1;
+        });
+
+        let produtosCatalogo = [];
+        fetch('{% url "pedidos:produtos_json" %}')
+            .then(function (response) { return response.json(); })
+            .then(function (data) { produtosCatalogo = data; });
+
+        document.getElementById('items-table').addEventListener('change', function (event) {
+            if (!event.target.classList.contains('item-produto-select')) return;
+
+            const produtoId = parseInt(event.target.value, 10);
+            const produto = produtosCatalogo.find(function (p) { return p.id === produtoId; });
+            if (!produto) return;
+
+            const row = event.target.closest('tr');
+            const descricaoInput = row.querySelector('input[name$="-descricao"]');
+            const precoInput = row.querySelector('input[name$="-preco_unitario"]');
+            if (descricaoInput && !descricaoInput.value) descricaoInput.value = produto.nome;
+            if (precoInput) precoInput.value = produto.preco_padrao;
+        });
+    </script>
+</body>
+</html>

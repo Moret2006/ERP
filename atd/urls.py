@@ -21,4 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('login.urls')),
     path('dashboard/', include('dash.urls')),
+    path('pedidos/', include('pedidos.urls')),
+    path('integracoes/bling/', include('bling.urls')),
 ]

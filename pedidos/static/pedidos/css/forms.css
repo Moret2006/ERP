@@ -1,0 +1,60 @@
+.form-card {
+    max-width: 720px;
+}
+
+.form-field {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.form-field label {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #d8dbe3;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.95rem;
+}
+
+.form-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-errors {
+    color: #d1354a;
+    font-size: 0.85rem;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.items-table th,
+.items-table td {
+    padding: 0.5rem;
+    text-align: left;
+}
+
+.items-table input {
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid #d8dbe3;
+    border-radius: 6px;
+}
+
+.form-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+}

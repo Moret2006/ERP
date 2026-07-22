@@ -10,10 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+load_dotenv(BASE_DIR / '.env')
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
     'dash.apps.DashConfig',
+    'pedidos.apps.PedidosConfig',
+    'bling.apps.BlingConfig',
 ]
 
 MIDDLEWARE = [
@@ -63,6 +70,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'dash.context_processors.topbar_user',
             ],
         },
     },
@@ -121,3 +129,10 @@ STATIC_URL = 'static/'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dash'
 LOGOUT_REDIRECT_URL = 'login'
+
+
+# Integração Bling (https://developer.bling.com.br)
+# Configurar via variáveis de ambiente quando o app estiver registrado no painel da Bling.
+BLING_CLIENT_ID = os.environ.get('BLING_CLIENT_ID', '')
+BLING_CLIENT_SECRET = os.environ.get('BLING_CLIENT_SECRET', '')
+BLING_REDIRECT_URI = os.environ.get('BLING_REDIRECT_URI', '')

@@ -24,8 +24,7 @@
                         <p>Bem-vinda ao seu painel de gestão.</p>
                     </div>
                     <div class="page-header__actions">
-                        {# href: {% url 'pedidos:create' %} quando o app existir #}
-                        <a href="#" class="btn btn--blue">+ Novo Pedido</a>
+                        <a href="{% url 'pedidos:pedido_create' %}" class="btn btn--blue">+ Novo Pedido</a>
                         {# href: {% url 'orcamentos:create' %} quando o app existir #}
                         <a href="#" class="btn btn--pink">+ Novo Orçamento</a>
                     </div>
@@ -115,8 +114,7 @@
                     <article class="card card--orders">
                         <header class="card__header">
                             <h2 class="card__title">Pedidos Recentes</h2>
-                            {# href: {% url 'pedidos:list' %} quando o app existir #}
-                            <a href="#" class="card__link">Ver todos</a>
+                            <a href="{% url 'pedidos:list' %}" class="card__link">Ver todos</a>
                         </header>
 
                         <div class="table-wrap">

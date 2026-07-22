@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos — Ateliê dos Balões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                <section class="page-header">
+                    <div class="page-header__text">
+                        <h1>Pedidos</h1>
+                        <p>Todos os pedidos cadastrados.</p>
+                    </div>
+                    <div class="page-header__actions">
+                        <a href="{% url 'pedidos:pedido_create' %}" class="btn btn--blue">+ Novo Pedido</a>
+                    </div>
+                </section>
+
+                <section class="content-grid content-grid--2">
+                    <article class="card card--orders" style="grid-column: 1 / -1;">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Pedido</th>
+                                        <th>Cliente</th>
+                                        <th>Status</th>
+                                        <th>Valor</th>
+                                        <th>Data</th>
+                                        <th class="data-table__actions-col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pedido in page_obj %}
+                                    <tr>
+                                        <td data-label="Pedido"><strong>#{{ pedido.id }}</strong></td>
+                                        <td data-label="Cliente">{{ pedido.cliente }}</td>
+                                        <td data-label="Status">
+                                            <span class="badge">{{ pedido.get_status_display }}</span>
+                                        </td>
+                                        <td data-label="Valor">R$ {{ pedido.valor_total }}</td>
+                                        <td data-label="Data">{{ pedido.criado_em|date:"d/m/Y H:i" }}</td>
+                                        <td data-label="Ações" class="data-table__actions-col">
+                                            <a href="{% url 'pedidos:pedido_edit' pedido.pk %}">Editar</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="data-table__empty-row">
+                                        <td colspan="6">
+                                            <div class="empty-state">
+                                                <p>Nenhum pedido cadastrado.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if page_obj.has_other_pages %}
+                        <nav class="pagination" aria-label="Paginação de pedidos">
+                            {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                            {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                            {% endif %}
+                        </nav>
+                        {% endif %}
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração Bling — Ateliê dos Balões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                <section class="page-header">
+                    <div class="page-header__text">
+                        <h1>Integração Bling</h1>
+                        <p>Conecte o ERP à sua conta Bling para importar pedidos, produtos e clientes.</p>
+                    </div>
+                </section>
+
+                <section class="content-grid content-grid--2">
+                    <article class="card" style="grid-column: 1 / -1;">
+                        {% if messages %}
+                        {% for message in messages %}
+                        <p>{{ message }}</p>
+                        {% endfor %}
+                        {% endif %}
+
+                        {% if not configurado %}
+                        <p>
+                            Ainda não há <code>BLING_CLIENT_ID</code> / <code>BLING_CLIENT_SECRET</code> /
+                            <code>BLING_REDIRECT_URI</code> configurados nas variáveis de ambiente.
+                            Registre o app no painel da Bling e configure essas variáveis antes de conectar.
+                        </p>
+                        {% elif token %}
+                        <p>Conectado. Token {% if token.expirado %}<strong>expirado</strong>{% else %}válido{% endif %},
+                            atualizado em {{ token.atualizado_em|date:"d/m/Y H:i" }}.</p>
+                        <a href="{% url 'bling:connect' %}" class="btn btn--blue">Reconectar</a>
+                        {% else %}
+                        <p>Ainda não conectado à Bling.</p>
+                        <a href="{% url 'bling:connect' %}" class="btn btn--blue">Conectar Bling</a>
+                        {% endif %}
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+</body>
+</html>

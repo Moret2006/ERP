@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Produtos — Ateliê dos Balões</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                <section class="page-header">
+                    <div class="page-header__text">
+                        <h1>Produtos</h1>
+                        <p>Catálogo de produtos cadastrados.</p>
+                    </div>
+                    <div class="page-header__actions">
+                        <a href="{% url 'pedidos:produto_create' %}" class="btn btn--blue">+ Novo Produto</a>
+                    </div>
+                </section>
+
+                <section class="content-grid content-grid--2">
+                    <article class="card card--orders" style="grid-column: 1 / -1;">
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Preço padrão</th>
+                                        <th>Estoque</th>
+                                        <th>Ativo</th>
+                                        <th class="data-table__actions-col">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for produto in page_obj %}
+                                    <tr>
+                                        <td data-label="Nome"><strong>{{ produto.nome }}</strong></td>
+                                        <td data-label="Preço padrão">R$ {{ produto.preco_padrao }}</td>
+                                        <td data-label="Estoque">{{ produto.estoque }}</td>
+                                        <td data-label="Ativo">{% if produto.ativo %}Sim{% else %}Não{% endif %}</td>
+                                        <td data-label="Ações" class="data-table__actions-col">
+                                            <a href="{% url 'pedidos:produto_edit' produto.pk %}">Editar</a>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr class="data-table__empty-row">
+                                        <td colspan="5">
+                                            <div class="empty-state">
+                                                <p>Nenhum produto cadastrado.</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {% if page_obj.has_other_pages %}
+                        <nav class="pagination" aria-label="Paginação de produtos">
+                            {% if page_obj.has_previous %}
+                            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                            {% endif %}
+                            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                            {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                            {% endif %}
+                        </nav>
+                        {% endif %}
+                    </article>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+</body>
+</html>
