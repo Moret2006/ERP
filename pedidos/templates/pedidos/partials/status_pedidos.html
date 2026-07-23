@@ -1,0 +1,52 @@
+<article class="card pedidos-status-card">
+    <header class="card__header">
+        <h2 class="card__title">Status dos Pedidos</h2>
+        <span class="chart-filter chart-filter--static">Este mês</span>
+    </header>
+
+    <div class="status-panel">
+        <div class="status-panel__chart">
+            <canvas id="status-chart" aria-label="Gráfico de status dos pedidos"></canvas>
+            <div class="status-panel__center">
+                <span class="status-panel__center-label">Total</span>
+                <strong class="status-panel__center-value">{{ total_pedidos }}</strong>
+                <span class="status-panel__center-sub">pedidos</span>
+            </div>
+        </div>
+
+        <ul class="status-legend">
+            <li>
+                <span class="status-legend__dot status-legend__dot--green"></span>
+                <span class="status-legend__label">Concluídos</span>
+                <strong>{{ status_pedidos.concluidos.quantidade }}</strong>
+                <span class="status-legend__pct">({{ status_pedidos.concluidos.percentual }}%)</span>
+            </li>
+            <li>
+                <span class="status-legend__dot status-legend__dot--blue"></span>
+                <span class="status-legend__label">Em andamento</span>
+                <strong>{{ status_pedidos.em_andamento.quantidade }}</strong>
+                <span class="status-legend__pct">({{ status_pedidos.em_andamento.percentual }}%)</span>
+            </li>
+            <li>
+                <span class="status-legend__dot status-legend__dot--pink"></span>
+                <span class="status-legend__label">Cancelados</span>
+                <strong>{{ status_pedidos.cancelados.quantidade }}</strong>
+                <span class="status-legend__pct">({{ status_pedidos.cancelados.percentual }}%)</span>
+            </li>
+            <li>
+                <span class="status-legend__dot status-legend__dot--orange"></span>
+                <span class="status-legend__label">Aguardando</span>
+                <strong>{{ status_pedidos.aguardando.quantidade }}</strong>
+                <span class="status-legend__pct">({{ status_pedidos.aguardando.percentual }}%)</span>
+            </li>
+        </ul>
+    </div>
+
+    <footer class="status-panel__footer">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Taxa de conclusão: {{ taxa_conclusao }}%.</span>
+    </footer>
+</article>

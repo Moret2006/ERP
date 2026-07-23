@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Ateliê dos Balões{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'dash/css/dashboard.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="dashboard-body">
+    <div class="dashboard-layout">
+        {% include 'dash/partials/_sidebar.html' %}
+
+        <div class="dashboard-main">
+            {% include 'dash/partials/_topbar.html' %}
+
+            <main class="dashboard-content">
+                {% if messages %}
+                <ul class="flash-messages" aria-live="polite">
+                    {% for message in messages %}
+                    <li class="flash-messages__item flash-messages__item--{{ message.tags }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    {% block extra_js_data %}{% endblock %}
+    <script src="{% static 'dash/js/dashboard.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

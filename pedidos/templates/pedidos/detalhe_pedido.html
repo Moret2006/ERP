@@ -1,0 +1,128 @@
+{% extends "dash/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Pedido {{ pedido.numero }} — Ateliê dos Balões{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pedidos/css/pedidos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pedidos-page">
+    <section class="page-header pedidos-header">
+        <div class="page-header__text">
+            <h1>Pedido {{ pedido.numero }}</h1>
+            <p>{{ pedido.cliente }} · {{ pedido.get_status_display }}</p>
+        </div>
+        <div class="page-header__actions pedidos-header-actions">
+            <a href="{% url 'pedidos:dashboard' %}" class="btn btn--ghost">Voltar</a>
+            <a href="{% url 'pedidos:editar' pedido.pk %}" class="btn btn--pink">Editar</a>
+        </div>
+    </section>
+
+    <div class="content-grid content-grid--2">
+        <article class="card">
+            <header class="card__header">
+                <h2 class="card__title">Detalhes</h2>
+                <span class="badge badge--{{ pedido.status_badge_class }} pedido-status-badge">
+                    {{ pedido.get_status_display }}
+                </span>
+            </header>
+
+            <dl class="detail-list">
+                <div>
+                    <dt>Cliente</dt>
+                    <dd>{{ pedido.cliente }}</dd>
+                </div>
+                <div>
+                    <dt>Descrição</dt>
+                    <dd>{{ pedido.descricao }}</dd>
+                </div>
+                <div>
+                    <dt>Valor total</dt>
+                    <dd>{{ pedido.valor_formatado }}</dd>
+                </div>
+                <div>
+                    <dt>Data de criação</dt>
+                    <dd>{{ pedido.data_criacao|date:"d/m/Y H:i" }}</dd>
+                </div>
+                <div>
+                    <dt>Data de entrega</dt>
+                    <dd>{% if pedido.data_entrega %}{{ pedido.data_entrega|date:"d/m/Y" }}{% else %}—{% endif %}</dd>
+                </div>
+                <div>
+                    <dt>Observações</dt>
+                    <dd>{% if pedido.observacoes %}{{ pedido.observacoes }}{% else %}—{% endif %}</dd>
+                </div>
+            </dl>
+        </article>
+
+        <article class="card">
+            <header class="card__header">
+                <h2 class="card__title">Alterar status</h2>
+            </header>
+            <form method="post" action="{% url 'pedidos:alterar_status' pedido.pk %}" class="status-form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{% url 'pedidos:detalhar' pedido.pk %}">
+                <div class="form-field">
+                    <label class="form-field__label" for="id_status">Novo status</label>
+                    <select name="status" id="id_status" class="form-field__input">
+                        {% for value, label in status_form.fields.status.choices %}
+                        <option value="{{ value }}"{% if value == pedido.status %} selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <button type="submit" class="btn btn--pink">Atualizar status</button>
+            </form>
+
+            <div class="detail-actions">
+                <form method="post" action="{% url 'pedidos:cancelar' pedido.pk %}" onsubmit="return confirm('Cancelar este pedido?');">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{% url 'pedidos:detalhar' pedido.pk %}">
+                    <button type="submit" class="btn btn--ghost">Cancelar pedido</button>
+                </form>
+                <form method="post" action="{% url 'pedidos:excluir' pedido.pk %}" onsubmit="return confirm('Excluir permanentemente este pedido?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn--danger">Excluir</button>
+                </form>
+            </div>
+        </article>
+    </div>
+
+    <article class="card">
+        <header class="card__header">
+            <h2 class="card__title">Itens</h2>
+        </header>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Descrição</th>
+                        <th>Qtd</th>
+                        <th>Valor unit.</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in pedido.itens.all %}
+                    <tr>
+                        <td>{{ item.produto|default:"—" }}</td>
+                        <td>{{ item.descricao }}</td>
+                        <td>{{ item.quantidade }}</td>
+                        <td>R$ {{ item.valor_unitario|floatformat:2 }}</td>
+                        <td>R$ {{ item.subtotal|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5">
+                            <div class="empty-state"><p>Nenhum item neste pedido.</p></div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </article>
+</div>
+{% endblock %}

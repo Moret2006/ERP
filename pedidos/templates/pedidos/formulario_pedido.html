@@ -1,0 +1,114 @@
+{% extends "dash/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }} — Ateliê dos Balões{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pedidos/css/pedidos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pedidos-page">
+    <section class="page-header pedidos-header">
+        <div class="page-header__text">
+            <h1>{{ page_title }}</h1>
+            <p>Preencha os dados do pedido e os itens.</p>
+        </div>
+        <div class="page-header__actions pedidos-header-actions">
+            <a href="{{ cancel_url }}" class="btn btn--ghost">Voltar</a>
+        </div>
+    </section>
+
+    <form method="post" class="pedido-form card" novalidate>
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <div class="pedido-form__grid">
+            <div class="form-field">
+                <label class="form-field__label" for="{{ form.cliente.id_for_label }}">Cliente</label>
+                {{ form.cliente }}
+                {% if form.cliente.errors %}<p class="form-field__error">{{ form.cliente.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="form-field">
+                <label class="form-field__label" for="{{ form.status.id_for_label }}">Status</label>
+                {{ form.status }}
+                {% if form.status.errors %}<p class="form-field__error">{{ form.status.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="form-field form-field--full">
+                <label class="form-field__label" for="{{ form.descricao.id_for_label }}">Descrição</label>
+                {{ form.descricao }}
+                {% if form.descricao.errors %}<p class="form-field__error">{{ form.descricao.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="form-field">
+                <label class="form-field__label" for="{{ form.data_entrega.id_for_label }}">Data de entrega</label>
+                {{ form.data_entrega }}
+                {% if form.data_entrega.errors %}<p class="form-field__error">{{ form.data_entrega.errors.0 }}</p>{% endif %}
+            </div>
+
+            <div class="form-field form-field--full">
+                <label class="form-field__label" for="{{ form.observacoes.id_for_label }}">Observações</label>
+                {{ form.observacoes }}
+                {% if form.observacoes.errors %}<p class="form-field__error">{{ form.observacoes.errors.0 }}</p>{% endif %}
+            </div>
+        </div>
+
+        <section class="pedido-itens">
+            <header class="pedido-itens__header">
+                <h2>Itens do pedido</h2>
+                <p>Informe ao menos um item com quantidade e valor unitário.</p>
+            </header>
+
+            {{ formset.management_form }}
+            {% if formset.non_form_errors %}
+            <div class="form-errors">{{ formset.non_form_errors }}</div>
+            {% endif %}
+
+            <div class="pedido-itens__list" id="pedido-itens-list">
+                {% for item_form in formset %}
+                <div class="pedido-item-row{% if item_form.instance.pk %} is-existing{% endif %}">
+                    {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
+                    <div class="form-field">
+                        <label class="form-field__label">Produto</label>
+                        {{ item_form.produto }}
+                    </div>
+                    <div class="form-field">
+                        <label class="form-field__label">Descrição</label>
+                        {{ item_form.descricao }}
+                        {% if item_form.descricao.errors %}<p class="form-field__error">{{ item_form.descricao.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="form-field__label">Quantidade</label>
+                        {{ item_form.quantidade }}
+                        {% if item_form.quantidade.errors %}<p class="form-field__error">{{ item_form.quantidade.errors.0 }}</p>{% endif %}
+                    </div>
+                    <div class="form-field">
+                        <label class="form-field__label">Valor unitário</label>
+                        {{ item_form.valor_unitario }}
+                        {% if item_form.valor_unitario.errors %}<p class="form-field__error">{{ item_form.valor_unitario.errors.0 }}</p>{% endif %}
+                    </div>
+                    {% if item_form.DELETE %}
+                    <div class="form-field form-field--delete">
+                        <label class="form-field__check">
+                            {{ item_form.DELETE }}
+                            <span>Remover</span>
+                        </label>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <div class="pedido-form__actions">
+            <a href="{{ cancel_url }}" class="btn btn--ghost">Cancelar</a>
+            <button type="submit" class="btn btn--pink">{{ submit_label }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

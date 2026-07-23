@@ -1,0 +1,44 @@
+{% extends "dash/base_dashboard.html" %}
+{% load static %}
+
+{% block title %}Pedidos — Ateliê dos Balões{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'pedidos/css/pedidos.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="pedidos-page">
+    <section class="page-header pedidos-header">
+        <div class="page-header__text">
+            <h1>Pedidos <span class="page-header__icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M6 6h15l-1.5 9H7.5L6 6z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                    <circle cx="9" cy="19" r="1.5" fill="currentColor"/>
+                    <circle cx="17" cy="19" r="1.5" fill="currentColor"/>
+                </svg>
+            </span></h1>
+            <p>Acompanhe e gerencie os pedidos da sua loja.</p>
+        </div>
+        <div class="page-header__actions pedidos-header-actions">
+            <a href="{% url 'pedidos:criar' %}" class="btn btn--pink btn-adicionar-pedido">+ Adicionar Pedido</a>
+        </div>
+    </section>
+
+    {% include 'pedidos/partials/cards_resumo.html' %}
+
+    <section class="content-grid content-grid--2 pedidos-main-grid">
+        {% include 'pedidos/partials/tabela_pedidos.html' %}
+        {% include 'pedidos/partials/status_pedidos.html' %}
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js_data %}
+{{ status_chart_data|json_script:"status-chart-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+<script src="{% static 'pedidos/js/pedidos.js' %}" defer></script>
+{% endblock %}

@@ -1,0 +1,79 @@
+<article class="card pedidos-table-card">
+    <header class="card__header">
+        <h2 class="card__title">Pedidos Recentes</h2>
+        <a href="{% url 'pedidos:dashboard' %}" class="card__link">Ver todos</a>
+    </header>
+
+    <div class="table-wrap">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Pedido</th>
+                    <th>Cliente</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th class="data-table__actions-col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for pedido in pedidos_recentes %}
+                <tr>
+                    <td data-label="Pedido"><strong>{{ pedido.numero }}</strong></td>
+                    <td data-label="Cliente">{{ pedido.cliente }}</td>
+                    <td data-label="Descrição">{{ pedido.descricao|truncatechars:40 }}</td>
+                    <td data-label="Status">
+                        <span class="badge badge--{{ pedido.status_badge_class }} pedido-status-badge">
+                            {{ pedido.get_status_display }}
+                        </span>
+                    </td>
+                    <td data-label="Valor">{{ pedido.valor_formatado }}</td>
+                    <td data-label="Data">{{ pedido.data_criacao|date:"d/m/Y H:i" }}</td>
+                    <td data-label="Ações" class="data-table__actions-col">
+                        <div class="row-actions">
+                            <a href="{% url 'pedidos:detalhar' pedido.pk %}" class="icon-action icon-action--view" aria-label="Visualizar pedido {{ pedido.numero }}">
+                                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                                    <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z" stroke="currentColor" stroke-width="1.8"/>
+                                    <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.8"/>
+                                </svg>
+                            </a>
+                            <div class="action-menu" data-action-menu>
+                                <button type="button" class="dots-btn" aria-label="Mais ações do pedido {{ pedido.numero }}" aria-expanded="false" data-action-toggle>⋯</button>
+                                <div class="action-menu__dropdown" hidden data-action-dropdown>
+                                    <a href="{% url 'pedidos:detalhar' pedido.pk %}" class="action-menu__item">Visualizar</a>
+                                    <a href="{% url 'pedidos:editar' pedido.pk %}" class="action-menu__item">Editar</a>
+                                    <form method="post" action="{% url 'pedidos:alterar_status' pedido.pk %}" class="action-menu__form">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'pedidos:dashboard' %}">
+                                        <input type="hidden" name="status" value="em_andamento">
+                                        <button type="submit" class="action-menu__item action-menu__btn">Marcar em andamento</button>
+                                    </form>
+                                    <form method="post" action="{% url 'pedidos:cancelar' pedido.pk %}" class="action-menu__form" onsubmit="return confirm('Cancelar este pedido?');">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{% url 'pedidos:dashboard' %}">
+                                        <button type="submit" class="action-menu__item action-menu__btn">Cancelar</button>
+                                    </form>
+                                    <form method="post" action="{% url 'pedidos:excluir' pedido.pk %}" class="action-menu__form" onsubmit="return confirm('Excluir permanentemente este pedido?');">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-menu__item action-menu__btn action-menu__btn--danger">Excluir</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="data-table__empty-row">
+                    <td colspan="7">
+                        <div class="empty-state empty-state--actions">
+                            <p>Nenhum pedido encontrado.</p>
+                            <a href="{% url 'pedidos:criar' %}" class="btn btn--pink btn-adicionar-pedido">Criar primeiro pedido</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</article>

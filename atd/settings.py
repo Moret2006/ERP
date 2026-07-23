@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login.apps.LoginConfig',
     'dash.apps.DashConfig',
+    'pedidos.apps.PedidosConfig',
 ]
 
 MIDDLEWARE = [

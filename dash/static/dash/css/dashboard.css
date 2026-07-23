@@ -464,6 +464,37 @@ img {
     background: linear-gradient(135deg, var(--pink), #ff5c96);
 }
 
+/* Flash messages */
+.flash-messages {
+    list-style: none;
+    margin: 0 0 18px;
+    display: grid;
+    gap: 8px;
+}
+
+.flash-messages__item {
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-weight: 500;
+}
+
+.flash-messages__item--success {
+    background: var(--green-soft);
+    color: var(--green);
+}
+
+.flash-messages__item--error {
+    background: var(--pink-soft);
+    color: var(--pink-dark);
+}
+
+.flash-messages__item--info,
+.flash-messages__item--warning {
+    background: var(--orange-soft);
+    color: var(--orange);
+}
+
 /* Stats */
 .stats-grid {
     display: grid;
@@ -694,6 +725,11 @@ img {
 .badge--orange {
     background: var(--orange-soft);
     color: #c45f12;
+}
+
+.badge--pink {
+    background: var(--pink-soft);
+    color: var(--pink-dark);
 }
 
 /* Chart */

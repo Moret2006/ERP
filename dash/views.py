@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+from pedidos.selectors import obter_pedidos_recentes, obter_resumo_pedidos_mes
+
 
 def _display_name(user):
     if user.get_full_name():
@@ -17,31 +19,24 @@ def _user_role(user):
 
 
 def _dashboard_context(user):
-    """
-    Contexto do dashboard preparado para integração com o backend.
-    Enquanto os módulos não existirem, listas ficam vazias e métricas como None
-    para exibir skeletons no template.
-    """
+    resumo_mes = obter_resumo_pedidos_mes()
     return {
         'display_name': _display_name(user),
         'user_role': _user_role(user),
         'active_nav': 'dashboard',
-        # Métricas superiores — substituir quando houver models/serviços
         'monthly_sales': None,
-        'monthly_orders': None,
+        'monthly_orders': {
+            'value': resumo_mes['quantidade'],
+            'subtitle': resumo_mes['valor_formatado'],
+        },
         'monthly_budgets': None,
         'total_clients': None,
-        # Listas e gráficos
-        'recent_orders': [],
+        'recent_orders': obter_pedidos_recentes(limite=5),
         'sales_chart_labels': [],
         'sales_chart_values': [],
         'financial_summary': None,
         'best_selling_products': [],
         'upcoming_deliveries': [],
-        # Rotas futuras — descomentar quando os apps existirem
-        # 'url_new_order': reverse('pedidos:create'),
-        # 'url_new_budget': reverse('orcamentos:create'),
-        # 'url_orders_list': reverse('pedidos:list'),
     }
 
 

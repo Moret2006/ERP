@@ -1,0 +1,57 @@
+<section class="stats-grid pedidos-summary-grid" aria-label="Resumo de pedidos">
+    <article class="stat-card stat-card--pink pedidos-summary-card">
+        <div class="stat-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 7h16v12H4V7z" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M8 7V5a4 4 0 018 0v2" stroke="currentColor" stroke-width="1.8"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <span class="stat-card__label">Pedidos do Dia</span>
+            <strong class="stat-card__value">{{ resumo.pedidos_do_dia.quantidade }}</strong>
+            <span class="stat-card__meta stat-card__meta--pink">{{ resumo.pedidos_do_dia.valor_formatado }}</span>
+        </div>
+    </article>
+
+    <article class="stat-card stat-card--blue pedidos-summary-card">
+        <div class="stat-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <span class="stat-card__label">Em Andamento</span>
+            <strong class="stat-card__value">{{ resumo.em_andamento.quantidade }}</strong>
+            <span class="stat-card__meta stat-card__meta--blue">{{ resumo.em_andamento.valor_formatado }}</span>
+        </div>
+    </article>
+
+    <article class="stat-card stat-card--green pedidos-summary-card">
+        <div class="stat-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M8.5 12.5l2.5 2.5 4.5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <span class="stat-card__label">Concluídos</span>
+            <strong class="stat-card__value">{{ resumo.concluidos.quantidade }}</strong>
+            <span class="stat-card__meta stat-card__meta--green">{{ resumo.concluidos.valor_formatado }}</span>
+        </div>
+    </article>
+
+    <article class="stat-card stat-card--red pedidos-summary-card">
+        <div class="stat-card__icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8"/>
+                <path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="stat-card__content">
+            <span class="stat-card__label">Cancelados</span>
+            <strong class="stat-card__value">{{ resumo.cancelados.quantidade }}</strong>
+            <span class="stat-card__meta stat-card__meta--red">{{ resumo.cancelados.valor_formatado }}</span>
+        </div>
+    </article>
+</section>
